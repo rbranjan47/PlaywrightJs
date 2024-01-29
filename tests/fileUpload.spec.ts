@@ -6,6 +6,7 @@ test("fileUpload test", async function ({ page }) {
   const pageUploadOption = page.locator("#file-upload");
   await pageUploadOption.setInputFiles("./upload/image.jpg");
 
+  //file Submit Folder
   const pageUploadButton = page.locator("#file-submit");
   await pageUploadButton.click();
 
