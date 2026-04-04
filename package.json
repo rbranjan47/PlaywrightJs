@@ -4,13 +4,24 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "npx playwright test",
+    "text:chromium": "playwright test --project=Chromium",
+    "text:firefox": "playwright test --project=Firefox",
+    "text:webkit": "playwright test --project=WebKit",
+    "test:report": "npx playwright test && npx playwright show-report",
+    "test:openreport": "npx playwright show-report",
+    "test:ui": "playwright test --ui",
     "tests:api": "playwright test --config=api.config.ts --project=Chromium"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.41.1",
-    "@types/node": "^20.10.4"
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^20.19.39",
+    "dotenv": "^17.4.0"
+  },
+  "dependencies": {
+    "playwright": "^1.41.2"
   }
 }
