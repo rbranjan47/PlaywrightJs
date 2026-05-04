@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("fileUpload test", async function ({ page }) {
+test("fileUpload test", async ({ page })  => {
   await page.goto("https://the-internet.herokuapp.com/upload");
 
   const pageUploadOption = page.locator("#file-upload");

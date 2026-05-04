@@ -1,4 +1,4 @@
-import { test, expect, APIRequestContext } from '@playwright/test';
+import { test, expect, type APIRequestContext }  from '@playwright/test';
 
 const BASE_URL = 'https://jsonplaceholder.typicode.com';
 

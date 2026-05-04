@@ -1,8 +1,9 @@
 {
-  "name": "PlaywrightJs",
+  "name": "Playwright JS_TS",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type":"module",  
   "scripts": {
     "test": "npx playwright test",
     "text:chromium": "playwright test --project=Chromium",
@@ -11,7 +12,8 @@
     "test:report": "npx playwright test && npx playwright show-report",
     "test:openreport": "npx playwright show-report",
     "test:ui": "playwright test --ui",
-    "tests:api": "playwright test --config=api.config.ts --project=Chromium"
+    "tests:api": "playwright test --config=api.config.ts --project=Chromium",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",

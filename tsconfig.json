@@ -1,11 +1,28 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "CommonJS",
+    "module": "ESNext",
     "moduleResolution": "bundler",
-    "strict": true,
     "esModuleInterop": true,
-    "types": ["node"]
+    "types": ["node"],
+    "rootDir": ".", 
+     "outDir": "./dist",
+
+    // Recommended Options
+    "strict": true,
+    "jsx": "react-jsx",
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true,
+
+    // For nodejs:
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    // "types": ["node"],
+    // and npm install -D @types/node
+
+
   },
   "include": [
     "tests/**/*.ts",

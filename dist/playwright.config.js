@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const test_1 = require("@playwright/test");
+import { defineConfig, devices } from "@playwright/test";
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -9,7 +7,7 @@ const test_1 = require("@playwright/test");
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-exports.default = (0, test_1.defineConfig)({
+export default defineConfig({
     timeout: 30 * 1000,
     globalTimeout: 2 * 60 * 1000,
     testDir: "./tests",
@@ -37,7 +35,7 @@ exports.default = (0, test_1.defineConfig)({
         {
             name: "chromium",
             use: {
-                ...test_1.devices["Desktop Chrome"],
+                ...devices["Desktop Chrome"],
                 viewport: { width: 2133, height: 1027 },
                 screenshot: "only-on-failure",
                 video: "retain-on-failure",
