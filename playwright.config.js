@@ -31,18 +31,18 @@ exports.default = (0, test_1.defineConfig)({
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
         trace: "on-first-retry",
         actionTimeout: 0,
+        viewport: { width: 2133, height: 1027 },
+        screenshot: "only-on-failure",
+        video: "retain-on-failure",
+        trace: "on",
+        permissions: ["clipboard-read", "clipboard-write"],
     },
     /* Configure projects for major browsers */
     projects: [
         {
             name: "chromium",
             use: {
-                ...test_1.devices["Desktop Chrome"],
-                viewport: { width: 2133, height: 1027 },
-                screenshot: "only-on-failure",
-                video: "retain-on-failure",
-                trace: "on",
-                permissions: ["clipboard-read", "clipboard-write"],
+                ...test_1.devices["Desktop Chrome"]
             },
         },
         // {

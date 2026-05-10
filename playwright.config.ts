@@ -38,7 +38,10 @@ export default defineConfig({
     viewport: { width: 2133, height: 1027 },
     screenshot: "only-on-failure",
     video: "retain-on-failure",
-    permissions: ["clipboard-read", "clipboard-write"]
+    permissions: ["clipboard-read", "clipboard-write"],
+     launchOptions: {
+      args: ['--force-device-scale-factor=0.8']
+     }
   },
 
   /* Configure projects for major browsers */
