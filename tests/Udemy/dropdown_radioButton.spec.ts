@@ -13,11 +13,24 @@ test('Broswe Context Playwright Test', async ({ browser }) => {
     //Static dropdown
     await page.locator("select.form-control").selectOption("consult");
     console.log(await page.locator("select.form-control").inputValue());
+    await page.locator("select.form-control").selectOption("consult");
 
     //Dynamic dropdown
-    await page.locator("#autosuggest").type("ind");
-    await page.locator(".ui-menu-item div").first().click();
-    console.log(await page.locator("#autosuggest").inputValue());
+    // await page.locator("#autosuggest").pressSequentially("ind", { delay: 100 });
+    // await page.locator(".ui-menu-item div").first().click();
+    // console.log(await page.locator("#autosuggest").inputValue());
 
-    
+
+    // Radio button
+    await page.locator(".radiotextsty").last().click();
+    await page.locator("#okayBtn").click();
+    console.log(await page.locator(".radiotextsty").last().isChecked());
+
+    await expect(page.locator(".radiotextsty").last()).toBeChecked();
+    await page.locator("#terms").check();
+    await expect(page.locator("#terms")).toBeChecked();
+
+    await page.locator("#terms").uncheck();
+    await expect(page.locator("#terms").isChecked()).not.toBeFalsy();
+
 });
