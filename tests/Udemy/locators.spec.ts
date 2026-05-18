@@ -54,5 +54,23 @@ test('Broswe Context Playwright Test', async ({ browser }) => {
     //all text contents
     console.log(await page1.locator(".card-body a").allTextContents());
 
-}
-);
+});
+
+test("Different locators", async ({ page }) => {
+    await page.goto("https://rahulshettyacademy.com/angularpractice/");
+    console.log(await page.title());
+
+    // Get by label
+    await page.getByLabel("Check me out if you Love IceCreams!").click();
+    await page.getByLabel("Employed").check();
+    await page.getByLabel("Gender").selectOption("female");
+
+    // Get by placeholder
+    await page.getByRole("textbox", { name: "Email" }).pressSequentially("test@gmail.com");
+    await page.getByPlaceholder("Password").pressSequentially("Test@1234");
+    await page.getByRole("button", { name: "Submit" }).click();
+    
+
+    // Get by alt text
+    console.log(await page.getByAltText("Selenium Webdriver with Java").textContent());
+});
