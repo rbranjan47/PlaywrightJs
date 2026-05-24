@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test('Broswe Context Playwright Test', async ({ browser }) => {
+test('Dropdown & Radio Button Validations', async ({ browser }) => {
     const context = await browser.newContext();
     const page = await context.newPage();
 

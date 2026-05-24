@@ -6,33 +6,40 @@ import { test, expect } from "@playwright/test";
 // We can click on the date input field to open the calendar and then select the desired date from the calendar. 
 // We can also verify that the selected date is displayed in the input field.
 
-test('Broswe Context Playwright Test', async ({ browser }) => {
+test('Handling Calender- Clicking & Selecting Date', async ({ browser }) => {
     const context = await browser.newContext();
-    const page1 = await context.newPage();
+    const page = await context.newPage();
 
-    await page1.goto("https://rahulshettyacademy.com/seleniumPractise/#/offers");
+    await page.goto("https://rahulshettyacademy.com/seleniumPractise/#/offers");
 
     // Click on the date input field to open the calendar
-    await page1.locator("#datepicker").click();
+    await page.locator(".react-date-picker__calendar-button").click();
 
     // Select the desired date (e.g., 15th of the current month)
     const dateToSelect = "15";
-    const calendarDays = page1.locator(".ui-datepicker-calendar td a");
+    const calendarDays = page.locator("abbr");
     const count = await calendarDays.count();
     for (let i = 0; i < count; i++) {
-        const day = await calendarDays.nth(i).textContent();
-        if (day?.trim() === dateToSelect) {
+        const date = await calendarDays.nth(i).textContent();
+        if (date?.trim() === dateToSelect) {
             await calendarDays.nth(i).click();
             break;
         }
     }
 
-    // Verify that the selected date is displayed in the input field
-    const selectedDate = await page1.locator("#datepicker").inputValue();
-    expect(selectedDate).toContain(dateToSelect);
+    await page.waitForTimeout(8000);
 
+    // Verify that the selected date is displayed in the input field
+    const selectedDate = await page.locator(".react-date-picker__inputGroup__input");
+    selectedDate.waitFor();
+    const dateCount = await selectedDate.count();
+    let dateValue = "";
     // Assertion
-    expect(selectedDate).toBe("15/09/2024"); // Assuming the date format is DD/MM/YYYY
+    for (let i = 3; i < dateCount; i++) {
+        dateValue += await selectedDate.nth(i).inputValue() + "/";
+        console.log(dateValue);
+    }
+    expect(dateValue).toBe("05/15/2026"); // Assuming the date format is DD/MM/YYYY
 
     // Close the browser context
     await context.close();

@@ -1,17 +1,53 @@
 // Locators:
 //1. page.getByRole() to locate by explicit and implicit accessibility attributes.
+     // Exmaple- <button role="button" aria-label="Submit">Submit</button>
+     // page.getByRole("button", { name: "Submit" }).click();
+
+
 //2. page.getByText() to locate by text content.
+     // Exmaple- <button>Submit</button>
+     // page.getByText("Submit").click();
+
+
 //3. page.getByLabel() to locate a form control by associated label's text.
+     // Exmaple- <label for="email">Email</label><input id="email" type="text" />
+     // page.getByLabel("Email").pressSequentially("test@gmail.com");
+
+
 //4. page.getByPlaceholder() to locate an input by placeholder.
+     // Exmaple- <input placeholder="Enter your email" />
+     // page.getByPlaceholder("Enter your email").pressSequentially("test@gmail.com");
+
+
 //5. page.getByAltText() to locate an element, usually image, by its text alternative.
+     // Exmaple- <img alt="Selenium Webdriver with Java" src="image.jpg" />
+     // page.getByAltText("Selenium Webdriver with Java").textContent();
+
+
 //6. page.getByTitle() to locate an element by its title attribute.
+     // Exmaple- <a title="Learn more about Playwright" href="https://playwright.dev">Playwright</a>
+     // page.getByTitle("Learn more about Playwright").click();
+
+
 //7. page.getByTestId() to locate an element based on its data-testid attribute (other attributes can be configured).
+     // Exmaple- <div data-testid="custom-element">Custom Element</div>
+     // page.getByTestId("custom-element").textContent();
+
+
 //8. Locate by CSS or XPATH- page.locator("xpath or css")
+     // Exmaple- <button class="submit-btn">Submit</button>
+     // page.locator(".submit-btn").click();
+
+
 //9. SHADOW DOM- page.locator("css=selector").locator("css=selector")
+    // Exmaple- <div class="shadow-host"><div class="shadow-root"><button>Click Me</button></div></div>
+    // page.locator(".shadow-host").locator(".shadow-root button").click();
+
+    
 
 import { test, expect } from "@playwright/test";
 
-test('Broswe Context Playwright Test', async ({ browser }) => {
+test('Locators', async ({ browser }) => {
     const context = await browser.newContext();
     const page1 = await context.newPage();
 

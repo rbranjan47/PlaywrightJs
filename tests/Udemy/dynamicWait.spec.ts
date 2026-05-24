@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test('Broswe Context Playwright Test', async ({ browser }) => {
+test('Dynamics & Static Waits', async ({ browser }) => {
     const context = await browser.newContext();
     const page = await context.newPage();
 
@@ -24,6 +24,7 @@ test('Broswe Context Playwright Test', async ({ browser }) => {
     //all text contents
     console.log(await page.locator(".card-body b").allTextContents());
 
+    //wait on the page- Wait for 8 seconds
+    await page.waitForTimeout(8000);
 
-}
-);
+});
