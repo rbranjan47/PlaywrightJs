@@ -256,7 +256,7 @@ test('API Validations, Test', async ({ page }) => {
     await page.locator("//p[contains(text(), 'Coupon Applied')]").waitFor();
     const coupanMessage = await page.locator("//p[contains(text(), 'Coupon Applied')]").textContent();
     await expect(coupanMessage).toContain("* Coupon Applied");
-    
+
     //place order
     // await page.locator("text=Place Order").waitFor();
     // await page.locator("text=Place Order").click();
@@ -274,7 +274,7 @@ test('API Validations, Test', async ({ page }) => {
     expect(createOrderResponse.ok()).toBeTruthy();
     expect(createOrderResponse.status()).toBe(201);
 
-     // Order confirmation
+    // Order confirmation
     await page.locator(".hero-primary").waitFor();
     const orderConfirmationMessage = await page.locator(".hero-primary").textContent();
     expect(orderConfirmationMessage).toContain(" Thankyou for the order. ");
