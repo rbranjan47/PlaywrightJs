@@ -1,5 +1,6 @@
 import ExcelJS from 'exceljs';
 import * as fs from 'fs';
+import { test, expect } from "@playwright/test";
 
 async function readExcel() {
     const workbook = new ExcelJS.Workbook();
@@ -48,3 +49,13 @@ async function main() {
 }
 
 main();
+
+test("Upload downloaded excel validations", async ({page}) => {
+    page.goto("https://rahulshettyacademy.com/client/#/products");
+
+    const [fileChooser] = await Promise.all([
+        page.waitForEvent('filechooser'),
+        page.locator("input[type='file']").click()
+    ]);
+
+});
