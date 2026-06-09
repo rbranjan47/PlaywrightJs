@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const test_1 = require("@playwright/test");
+import { defineConfig, devices } from "@playwright/test";
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -42,7 +42,7 @@ exports.default = (0, test_1.defineConfig)({
         {
             name: "chromium",
             use: {
-                ...test_1.devices["Desktop Chrome"]
+                ...devices["Desktop Chrome"]
             },
         },
         // {

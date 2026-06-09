@@ -6,9 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "npx playwright test",
-    "text:chromium": "playwright test --project=Chromium",
-    "text:firefox": "playwright test --project=Firefox",
-    "text:webkit": "playwright test --project=WebKit",
+    "test:chromium": "playwright test --project=Chromium",
+    "test:firefox": "playwright test --project=Firefox",
+    "test:webkit": "playwright test --project=WebKit",
     "test:report": "npx playwright test && npx playwright show-report",
     "test:openreport": "npx playwright show-report",
     "test:ui": "playwright test --ui",
@@ -20,10 +20,14 @@
   "license": "ISC",
   "devDependencies": {
     "@playwright/test": "^1.59.1",
-    "@types/node": "^20.19.39",
-    "dotenv": "^17.4.0"
+    "@types/node": "^20.19.42",
+    "allure-commandline": "^2.42.0",
+    "allure-playwright": "^3.9.0",
+    "dotenv": "^17.4.0",
+    "ts-node": "^10.9.2"
   },
   "dependencies": {
+    "@cucumber/cucumber": "^13.0.0",
     "exceljs": "^4.4.0",
     "playwright": "^1.41.2"
   }

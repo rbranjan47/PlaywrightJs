@@ -1,5 +1,4 @@
 import { test, expect } from "@playwright/test";
-
 // Assertions 
 // Assertion	                                          Description
 // await expect(locator).toBeAttached()	                  Element is attached
@@ -33,7 +32,6 @@ import { test, expect } from "@playwright/test";
 // await expect(page).toHaveTitle()	                      Page has a title
 // await expect(page).toHaveURL()	                      Page has a URL
 // await expect(response).toBeOK()	                      Response has an OK status
-
 // NON RETRYING ASSERTIONS
 // Assertion	                                          Description
 // expect(value).toBe()	                                  Checks if the value is equal to the expected value
@@ -53,8 +51,6 @@ import { test, expect } from "@playwright/test";
 // expect(value).toHaveTitle()	                          Checks if the value has the expected title
 // expect(value).toHaveURL()	                          Checks if the value has the expected URL
 // expect(value).toHaveScreenshot()	                      Checks if the value has the expected screenshot
-
-
 // ASYMMETRIC ASSERTIONS
 // Assertion	                                          Description
 // expect.stringContaining()	                          Checks if the value contains the expected substring
@@ -64,19 +60,14 @@ import { test, expect } from "@playwright/test";
 // expect.any()                                           Matches any value
 // expect.anything()	                                  Matches any value except null or undefined
 // expect.not()	                                          Inverts the following assertion
-
-
 test('Broswe Context Playwright Test', async ({ browser }) => {
     const context = await browser.newContext();
     const page = await context.newPage();
-
     await page.goto("https://rahulshettyacademy.com/client/#/auth/login");
     console.log(await page.title());
-
     await page.locator("#userEmail").pressSequentially("johnsmith009@test.com", { delay: 100 });
     await page.locator("#userPassword").pressSequentially("Welcome1", { delay: 100 });
     await page.locator("#login").click();
-
     await page.locator(".card-body b").first().waitFor();
     // adding to cart
     const products = page.locator(".card-body");
@@ -88,7 +79,6 @@ test('Broswe Context Playwright Test', async ({ browser }) => {
             break;
         }
     }
-
     await expect(page.locator("[routerlink*='cart']")).toBeEnabled();
     await page.locator("[routerlink*='cart']").click();
     await page.locator("div li").first().waitFor();
@@ -103,9 +93,7 @@ test('Broswe Context Playwright Test', async ({ browser }) => {
             break;
         }
     }
-
     expect(itemFound).toBeTruthy();
-
     // ordering the product
     await page.locator("text=Checkout").click();
     await page.locator("[placeholder*='Country']").type("ind", { delay: 100 });
@@ -119,7 +107,6 @@ test('Broswe Context Playwright Test', async ({ browser }) => {
             break;
         }
     }
-
     // credit card details
     await page.getByText('Credit Card Number').locator('..').locator('input').clear();
     await page.getByText('Credit Card Number').locator('..').locator('input').pressSequentially("4111 1111 1111 1111", { delay: 100 });
@@ -127,39 +114,30 @@ test('Broswe Context Playwright Test', async ({ browser }) => {
     await page.locator("select.input.ddl").last().selectOption("28");
     await page.getByText('CVV Code ').locator('..').locator('input').pressSequentially("123", { delay: 100 });
     await page.getByText('Name on Card').locator('..').locator('input').pressSequentially("John Smith", { delay: 100 });
-
     //coupan
     await page.getByText('Apply Coupon').locator('..').locator('input').pressSequentially("rahulshettyacademy", { delay: 100 });
     await page.getByText('Apply Coupon').locator('..').locator('button').click();
     await page.locator("//p[contains(text(), 'Coupon Applied')]").waitFor();
     const coupanMessage = await page.locator("//p[contains(text(), 'Coupon Applied')]").textContent();
     await expect(coupanMessage).toContain("* Coupon Applied");
-    
     //place order
     await page.locator("text=Place Order").waitFor();
     await page.locator("text=Place Order").click();
-
     // Order confirmation
     await page.locator(".hero-primary").waitFor();
     const orderConfirmationMessage = await page.locator(".hero-primary").textContent();
     expect(orderConfirmationMessage).toContain(" Thankyou for the order. ");
-
     console.log("Order number: " + await page.locator(".em-spacer-1 .ng-star-inserted").textContent());
     console.log("Order item: " + await page.locator(".line-item .title").first().textContent());
-    console.log("Order price: " + await page.locator(".line-item .title").last().textContent());
-
+    console.log("Order price: " + await page.locator(".item-price").last().textContent());
     // Downloading & Saving the csv file to the local machine
     const [download] = await Promise.all([
         page.waitForEvent("download"),
         page.locator("text=Download Invoice").click()
     ]);
-
     // Save downloaded file to a desired location
     const downloadPath = await download.path();
     console.log("Download path: " + downloadPath);
     await download.saveAs("order-invoice.csv");
-
-
     await page.waitForTimeout(5000);
-
 });

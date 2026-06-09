@@ -1,9 +1,8 @@
 import { test, expect, request } from "@playwright/test";
-
 /*
-Playwright can be used to access the REST API of your application — sending requests to the server directly from Node.js without loading a page or running JS in a browser. 
-Common use cases include testing your server API, preparing server-side state before visiting a web app, and validating server-side post-conditions after browser actions. 
-All of this is done via APIRequestContext methods. 
+Playwright can be used to access the REST API of your application — sending requests to the server directly from Node.js without loading a page or running JS in a browser.
+Common use cases include testing your server API, preparing server-side state before visiting a web app, and validating server-side post-conditions after browser actions.
+All of this is done via APIRequestContext methods.
 
 ------------------------------Configuration------------------------------
 --------------------------------------------------------------------------
@@ -18,14 +17,14 @@ export default defineConfig({
     },
   }
 });
-If your tests need to run behind a proxy, you can specify this in the config and the request fixture will pick it up automatically. 
+If your tests need to run behind a proxy, you can specify this in the config and the request fixture will pick it up automatically.
 
 
 
 
 -------------------------Writing Tests-------------------------
 ---------------------------------------------------------------
-Playwright Test comes with a built-in request fixture that respects configuration options like baseURL and extraHTTPHeaders. Here's an example: 
+Playwright Test comes with a built-in request fixture that respects configuration options like baseURL and extraHTTPHeaders. Here's an example:
 jstest('should create a bug report', async ({ request }) => {
   const newIssue = await request.post(`/repos/${USER}/${REPO}/issues`, {
     data: {
@@ -80,8 +79,8 @@ jstest('last created issue should be on the server', async ({ page }) => {
 
 -------------------------Reusing Authentication State-------------------------
 ------------------------------------------------------------------------------
-Storage state is interchangeable between BrowserContext and APIRequestContext. 
-You can log in via API calls and then create a new browser context with those cookies already set. 
+Storage state is interchangeable between BrowserContext and APIRequestContext.
+You can log in via API calls and then create a new browser context with those cookies already set.
 jsconst requestContext = await request.newContext({
   httpCredentials: { username: 'user', password: 'passwd' }
 });
@@ -96,12 +95,12 @@ const context = await browser.newContext({ storageState: 'state.json' });
 
 -------------------------Context Request vs Global Request-------------------------
 -----------------------------------------------------------------------------------
-There are two types of APIRequestContext: 
-one associated with a BrowserContext, 
-and one isolated instance created via apiRequest.newContext(). 
+There are two types of APIRequestContext:
+one associated with a BrowserContext,
+and one isolated instance created via apiRequest.newContext().
 
-The key difference is that a context-associated request will share cookies with the browser context and automatically update them, 
-while an isolated instance has its own separate cookie storage. 
+The key difference is that a context-associated request will share cookies with the browser context and automatically update them,
+while an isolated instance has its own separate cookie storage.
 
 
 
@@ -118,7 +117,6 @@ fetch(request)Fetch using a Request objectrequest.
 storageState()Export cookies/storagerequest.
 dispose()Clean up the context
 */
-
 const payLoadBody_Login = { "userEmail": "johnsmith009@test.com", "userPassword": "Welcome1" };
 const payLoadBody_addToCart = {
     "_id": "6a00db4fe83610b531d84d09",
@@ -146,47 +144,31 @@ const payLoadBody_CreateAnOrder = {
         }
     ]
 };
-
-let login_token: any;
-
+let login_token;
 test.beforeAll("@API Validations, Before All Test", async () => {
     const apiContext = await request.newContext();
-    const loginResponse = await apiContext.post("https://rahulshettyacademy.com/api/ecom/auth/login",
-        {
-            data: payLoadBody_Login
-        }
-    )
+    const loginResponse = await apiContext.post("https://rahulshettyacademy.com/api/ecom/auth/login", {
+        data: payLoadBody_Login
+    });
     expect(loginResponse.ok()).toBeTruthy();
     expect(loginResponse.status()).toBe(200);
-
     const loginResponseJson = await loginResponse.json();
     console.log(loginResponseJson);
-
     login_token = loginResponseJson.token;
     console.log(login_token);
 });
-
-
 test.beforeEach("API Validations, Before Each Test", async () => {
-
 });
-
-
-
 test('@API Validations, Test', async ({ page }) => {
-
     // await page.locator("#userEmail").pressSequentially("johnsmith009@test.com", { delay: 100 });
     // await page.locator("#userPassword").pressSequentially("Welcome1", { delay: 100 });
     // await page.locator("#login").click();
     //ByPass using API Token
     await page.addInitScript(value => {
-        window.localStorage.setItem("token", value)
+        window.localStorage.setItem("token", value);
     }, login_token);
-
-
     await page.goto("https://rahulshettyacademy.com/client/");
     console.log(await page.title());
-
     // await page.locator(".card-body b").first().waitFor();
     // // adding to cart
     // const products = page.locator(".card-body");
@@ -200,18 +182,15 @@ test('@API Validations, Test', async ({ page }) => {
     // }
     //By API
     const apiContext = await request.newContext();
-    const addToCart = await apiContext.post("https://rahulshettyacademy.com/api/ecom/user/add-to-cart",
-        {
-            data: payLoadBody_addToCart,
-            headers: {
-                "Content-Type": "application/json",
-                "authorization": login_token
-            }
+    const addToCart = await apiContext.post("https://rahulshettyacademy.com/api/ecom/user/add-to-cart", {
+        data: payLoadBody_addToCart,
+        headers: {
+            "Content-Type": "application/json",
+            "authorization": login_token
         }
-    );
+    });
     expect(addToCart.ok()).toBeTruthy();
     expect(addToCart.status()).toBe(200);
-
     await expect(page.locator("[routerlink*='cart']")).toBeEnabled();
     await page.locator("[routerlink*='cart']").click();
     await page.locator("div li").first().waitFor();
@@ -227,7 +206,6 @@ test('@API Validations, Test', async ({ page }) => {
         }
     }
     // expect(itemFound).toBeTruthy();
-
     // ordering the product
     await page.locator("text=Checkout").click();
     await page.locator("[placeholder*='Country']").type("ind", { delay: 100 });
@@ -241,7 +219,6 @@ test('@API Validations, Test', async ({ page }) => {
             break;
         }
     }
-
     // credit card details
     await page.getByText('Credit Card Number').locator('..').locator('input').clear();
     await page.getByText('Credit Card Number').locator('..').locator('input').pressSequentially("4111 1111 1111 1111", { delay: 100 });
@@ -249,50 +226,38 @@ test('@API Validations, Test', async ({ page }) => {
     await page.locator("select.input.ddl").last().selectOption("28");
     await page.getByText('CVV Code ').locator('..').locator('input').pressSequentially("123", { delay: 100 });
     await page.getByText('Name on Card').locator('..').locator('input').pressSequentially("John Smith", { delay: 100 });
-
     //coupan
     await page.getByText('Apply Coupon').locator('..').locator('input').pressSequentially("rahulshettyacademy", { delay: 100 });
     await page.getByText('Apply Coupon').locator('..').locator('button').click();
     await page.locator("//p[contains(text(), 'Coupon Applied')]").waitFor();
     const coupanMessage = await page.locator("//p[contains(text(), 'Coupon Applied')]").textContent();
     await expect(coupanMessage).toContain("* Coupon Applied");
-
     //place order
     // await page.locator("text=Place Order").waitFor();
     // await page.locator("text=Place Order").click();
     //By API
     const apiCreateOrderContext = await request.newContext();
-    const createOrderResponse = await apiCreateOrderContext.post("https://rahulshettyacademy.com/api/ecom/order/create-order",
-        {
-            data: payLoadBody_CreateAnOrder,
-            headers: {
-                "Content-Type": "application/json",
-                "authorization": login_token
-            }
+    const createOrderResponse = await apiCreateOrderContext.post("https://rahulshettyacademy.com/api/ecom/order/create-order", {
+        data: payLoadBody_CreateAnOrder,
+        headers: {
+            "Content-Type": "application/json",
+            "authorization": login_token
         }
-    );
+    });
     expect(createOrderResponse.ok()).toBeTruthy();
     expect(createOrderResponse.status()).toBe(201);
-
     // Order confirmation
     await page.locator(".hero-primary").waitFor();
     const orderConfirmationMessage = await page.locator(".hero-primary").textContent();
     expect(orderConfirmationMessage).toContain(" Thankyou for the order. ");
-
     console.log("Order number: " + await page.locator(".em-spacer-1 .ng-star-inserted").textContent());
     console.log("Order item: " + await page.locator(".line-item .title").first().textContent());
     console.log("Order price: " + await page.locator(".line-item .title").last().textContent());
 });
-
-
 test.afterAll("@API Validations, After All Test", async () => {
-
 });
-
 test.afterEach("@API Validations, After Each Test", async () => {
-
 });
-
 // To Run tag test, add tag in test and run command as below
 // npx playwright test --grep @API
 // npx playwright test --grep @API --headed

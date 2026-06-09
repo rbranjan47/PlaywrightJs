@@ -8,7 +8,7 @@ import { defineConfig, devices } from "@playwright/test";
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-    timeout: 30 * 1000,
+    timeout: 120 * 1000,
     globalTimeout: 2 * 60 * 1000,
     testDir: "./tests",
     /* Run tests in files in parallel */
@@ -19,7 +19,8 @@ export default defineConfig({
     retries: process.env.CI ? 2 : 0,
     //retries: 2,
     /* Opt out of parallel tests on CI. */
-    workers: process.env.CI ? 1 : undefined,
+    //workers: process.env.CI ? 1 : undefined,
+    workers: 1,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     reporter: [["html"], ["list"]],
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -27,21 +28,23 @@ export default defineConfig({
         /* Base URL to use in actions like `await page.goto('/')`. */
         // baseURL: 'http://127.0.0.1:3000',
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+        headless: false,
         trace: "on-first-retry",
         actionTimeout: 0,
+        viewport: { width: 2133, height: 1027 },
+        screenshot: "only-on-failure",
+        video: "retain-on-failure",
+        permissions: ["clipboard-read", "clipboard-write"],
+        launchOptions: {
+            slowMo: 1000,
+            args: ['--force-device-scale-factor=0.8']
+        }
     },
     /* Configure projects for major browsers */
     projects: [
         {
             name: "chromium",
-            use: {
-                ...devices["Desktop Chrome"],
-                viewport: { width: 2133, height: 1027 },
-                screenshot: "only-on-failure",
-                video: "retain-on-failure",
-                trace: "on",
-                permissions: ["clipboard-read", "clipboard-write"],
-            },
+            use: { ...devices["Desktop Chrome"], },
         },
         // {
         //   name: "Chrome",
