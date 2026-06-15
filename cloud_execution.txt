@@ -1,0 +1,198 @@
+Topics:
+Developer
+- git push / merge PR (commit or merge to main)
+- GitHub Repository (source + workflow YAML)
+
+GitHub Actions
+- Workflow triggered (.github/workflows/*.yml)
+- Checkout & install deps (npm ci, install browsers)
+- Set env variables (PLAYWRIGHT_SERVICE_URL)
+- Run: npx playwright test (--config azure.config.ts)
+
+Microsoft Azure
+- Playwright Testing (Azure MPT service)
+- Cloud browsers (Chromium / Firefox / WebKit)
+- Parallel shards (distributed execution)
+- Results collected (pass / fail / traces)
+
+Azure Playwright Testing Dashboard — built-in report
+- Run summary (passed / failed / skipped)
+- Filter & search (by status, browser, shard)
+- Failure details (error message + stack trace)
+- Screenshots & videos (on failure capture)
+- Trace viewer (step-by-step DOM snapshots)
+- Trend & history (across runs over time)
+
+Flow:
+GitHub Repository -> Workflow triggered -> Run playwright tests -> Azure Playwright Testing
+Azure collects results -> uploads report -> Dashboard
+Artifacts/logs are available from the workflow run.
+
+
+
+
+
+// --------------------------------------Microsoft Azure--------------------------------------
+1. To execute in Azure > Create an account and purchase the azure space
+2. Select Playwright inbuilt workspace 
+3. Instance Details- Workspace name
+4. Region- Any region closed to (Helps execution jobs)
+5. Resoures Group- Logical container that groups releated resources (VMs, database, storage, etc). 
+                   This helps manage, secure, and bill them together- and delete them all at once when no longer needed.
+                   Example- RRD
+
+
+// After workspace creation, navigate to overview page.
+6. Click on Get Started option > Playwright test runner.
+  6.a. Install the playwright service package  
+        i.e. Copy and Run this cmd in Project Level- npm init @azuew/playwright@latest
+             After this azure configuration will be added in package.json file (azureplaywwright)
+    
+
+  6.b. Set the authetication
+       - Windows- Install azure CLI (Microsoft Installer)  OR 
+         WinGet(Windows Package Manager) & Run this cmd- winget install --exacr --id Microsoft.AzureCLI
+
+       - Mac- Install Homebrew software and Run the cmd brew update && brew install azure-cli
+
+       -- and the login into microsoft account.
+
+
+  6.c. Add the browser endpoint to your setup
+       - Under BASH > export PLAYWRIGHT_SERVICE_URL = URL_FROM_AZURE_INCLUDING_PLAYWRIGHT_NAME_RESOURCES_NAME > Copy this url
+       - Run the same in project terminal
+
+
+  6.d. [Optional] Enable advanced diagnostics using Playswright Reporter
+       - Under Setting > configuration > Create storage
+       - Now, give permission to storage account > 
+           az role assignment create\
+           --assignee "user_id"\ (serach microsoft entra id > Directory Page > Users > Object Id)
+           --role "Storage Blob Data Contributor"\  ()
+           --scope "$(az storage accocunt show --name pwstrgrrd5e3d -- resource-group rrd --query id -o tsv)" 
+
+
+  6.e. Run high-scale parallel tests
+       - Import config of playwright.config.ts / Playwright.config.js to playwright.service.config.ts / Playwright.service.config.js
+       - And in Playwright test runner > npx playwright test --config= Playwright.service.config.ts -- worker=5 
+        i.e. 5 test cases run at a time.
+
+        Then Run the test from the project terminal >> npx playwright test --config= Playwright.service.config.ts -- worker=5
+        & check the azure dashboard to check the execution and test run reports.
+
+
+    
+
+
+// ---------------------------------Github Actions execution---------------------------------
+1. Install the git in the machine > Create git repsitory and push the code > Push the code.
+2. Go to playwright docs > Setting up CI > And create playwright.yml file.
+3. Yml file will like-
+
+   name: Playwright Tests
+on:  (---- on is an Events)
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest   (---- Opertaing System)
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Run Playwright tests
+      run: npx playwright test
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
+
+4. After this push the code to repository. 
+
+5. To run the to configure azure to github, run this cmd in terminal.
+    az ad sp create-for-rbac \
+    --name "github-playwright" \
+    --role "Contributor" \
+    --scope "/subscriptions/SUBSCRIPTION_ID/resourceGroups/rrd" \ 
+    --json-auth
+
+    Above cmd will give some information in json file:
+      - clientId
+      - clientSecret
+      - subscriptionId
+      - tenantId
+      - activeDirectoryEndpointUrl
+      - resourceManagerEndpointUrl
+      - activeDirectoryGraphResourceId
+      - sqlManagementEndpointUrl
+      - galleryEndpointUrl
+      - managementEndpointUrl
+
+
+      Now, copy the details. Navigate to Githubs > Repository Setting > Secrets and variables > Actions > New Repository Secret > Save these details.
+      Then update playwright.yml file-
+
+      Now, navigate again to Githubs > Repository Setting > Secrets and variables > Actions > Variables and create new variables.
+         Under BASH > export PLAYWRIGHT_SERVICE_URL = URL_FROM_AZURE_INCLUDING_PLAYWRIGHT_NAME_RESOURCES_NAME > Copy this url
+        
+        Name = PLAYWRIGHT_SERVICE_URL
+        Value = URL_FROM_AZURE_INCLUDING_PLAYWRIGHT_NAME_RESOURCES_NAME
+
+         name: Playwright Tests
+on:  (---- on is an Events)
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest   (---- Opertaing System)
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - name: Install dependencies
+      run: npm ci
+
+
+    - name: Install Playwright Browsers    (0000 REMOVE THIS LINE AS IT WILL RUN IN AZURE)
+      run: npx playwright install --with-deps    (0000 REMOVE THIS LINE AS IT WILL RUN IN AZURE)
+
+    - name: Azure login      (---- Added Azure logins here)
+        uses: azure/login@v3
+        with:
+        creds: ${{secrets.AZURE_CREDENTIALS}}
+
+    - name: Run Playwright tests
+    env:
+    PLAYWRIGHT_SERVICE_URL: ${{vars.PLAYWRIGHT_SERVICE_URL}}
+      run: npx playwright test --config=playwright.service.config.ts --worker=5
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
+
+
+6. Now, Run this cmd to assign the role.
+   az role assignment create \ 
+   --assignee "$(az ad sp list --display-name 'github-playwright'--query '[0].appId' -o tsv)" \
+   --role "Storage Blob Data Contributor" \
+   --scope "$(az storage accocunt show --name STORAGE_ID --resource-group rrd --query id -o tsv)"
+
+
+
+Thank you. 👍
